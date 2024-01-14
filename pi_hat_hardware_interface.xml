@@ -1,0 +1,9 @@
+<library path="pi_hat_hardware_interface">
+
+  <class name="pi_hat_hardware_interface/PiHatHardwareInterface" type="pi_hat_hardware_interface::PiHatHardwareInterface" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Pupper v3 harware interface
+    </description>
+  </class>
+
+</library>

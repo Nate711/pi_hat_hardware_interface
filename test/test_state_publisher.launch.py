@@ -30,8 +30,8 @@ def generate_launch_description():
             " ",
             PathJoinSubstitution(
                 [
-#                    FindPackageShare("pi3hat_hardware_interface"),
-                    # "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
+#                    FindPackageShare("pi_hat_hardware_interface"),
+                    # "/home/pi/ros2_ws/src/pi_hat_hardware_interface",
                     # "test",
                     # "test_state_publisher.urdf.xacro",
                     "/home/pi/ros2_ws/src/pupper_v3_description",
@@ -45,8 +45,8 @@ def generate_launch_description():
 
     robot_controllers = PathJoinSubstitution(
         [
-#            FindPackageShare("pi3hat_hardware_interface"),
-            "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
+#            FindPackageShare("pi_hat_hardware_interface"),
+            "/home/pi/ros2_ws/src/pi_hat_hardware_interface",
             "test",
             "test_state_publisher.yaml",
         ]

@@ -51,9 +51,9 @@
     <child link="imu"/>
   </joint>
 
-  <ros2_control name="pi3hat_hardware_interface" type="system">
+  <ros2_control name="pi_hat_hardware_interface" type="system">
       <hardware>
-          <plugin>pi3hat_hardware_interface/Pi3HatHardwareInterface</plugin>
+          <plugin>pi_hat_hardware_interface/PiHatHardwareInterface</plugin>
       </hardware>
 
       <joint name="joint_1">
