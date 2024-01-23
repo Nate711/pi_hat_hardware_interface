@@ -30,10 +30,13 @@ def generate_launch_description():
             " ",
             PathJoinSubstitution(
                 [
-#                    FindPackageShare("pi3hat_hardware_interface"),
-                    "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
-                    "test",
-                    "test_state_publisher.urdf.xacro",
+                    FindPackageShare("pupper_v3_description"),
+                    # "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
+                    # "test",
+                    # "test_state_publisher.urdf.xacro",
+                    # "/home/pi/ros2_ws/src/pupper_v3_description",
+                    "description",
+                    "pupper_v3.urdf.xacro",
                 ]
             ),
         ]
@@ -42,8 +45,8 @@ def generate_launch_description():
 
     robot_controllers = PathJoinSubstitution(
         [
-#            FindPackageShare("pi3hat_hardware_interface"),
-            "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
+            FindPackageShare("pi3hat_hardware_interface"),
+            # "/home/pi/ros2_ws/src/pi3hat_hardware_interface",
             "test",
             "test_state_publisher.yaml",
         ]
@@ -75,20 +78,36 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "20",
+        ],
     )
 
     imu_sensor_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["imu_sensor_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=[
+            "imu_sensor_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "20",
+        ],
     )
 
-    # robot_controller_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     arguments=["forward_position_controller", "--controller-manager", "/controller_manager"],
-    # )
+    robot_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "forward_position_controller",
+            "--controller-manager",
+            "/controller_manager",
+        ],
+    )
 
     # Delay rviz start after `joint_state_broadcaster`
     # delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
@@ -99,20 +118,23 @@ def generate_launch_description():
     # )
 
     # Delay start of robot_controller after `joint_state_broadcaster`
-    # delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=joint_state_broadcaster_spawner,
-    #         on_exit=[robot_controller_spawner],
-    #     )
-    # )
+    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[robot_controller_spawner],
+            )
+        )
+    )
 
     nodes = [
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
+        # robot_controller_spawner,
         imu_sensor_broadcaster_spawner,
         # delay_rviz_after_joint_state_broadcaster_spawner,
-        # delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
     ]
 
     return LaunchDescription(nodes)
