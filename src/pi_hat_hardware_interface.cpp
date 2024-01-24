@@ -69,7 +69,7 @@ hardware_interface::CallbackReturn PiHatHardwareInterface::on_init(
   imu_yaw_ = std::stod(info_.sensors[0].parameters.at("yaw"));
 
   // Set up the IMU
-  imu_ = new BNO055(IMU_I2C_DEVICE_NUMBER);
+  imu_ = std::make_unique<BNO055>(IMU_I2C_DEVICE_NUMBER);
 
   // Set up SPI
   init_spi();

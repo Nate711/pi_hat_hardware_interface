@@ -51,7 +51,7 @@ class PiHatHardwareInterface : public hardware_interface::SystemInterface {
   void copy_actuator_states();
   void do_homing();
 
-  BNO055 *imu_;
+  std::unique_ptr<BNO055> imu_;
   BNO055::Output imu_output_;
   spi_command_t *spi_command_;
   spi_data_t *spi_data_;
