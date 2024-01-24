@@ -13,10 +13,8 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(tf2 REQUIRED)
 
-file(GLOB sources "src/*.cpp" "src/rt/*.c" "src/rt/*.cpp")
-
 # add compile directive for shared library
-add_library(pi_hat_hardware_interface SHARED ${sources})
+add_library(pi_hat_hardware_interface SHARED src/pi_hat_hardware_interface.cpp src/rt/rt_spi.cpp src/rt/rt_bno055.cpp)
 
 # add include directory
 target_include_directories(pi_hat_hardware_interface PRIVATE include)
@@ -28,10 +26,11 @@ pluginlib_export_plugin_description_file(hardware_interface
                                          pi_hat_hardware_interface.xml)
 
 # INSTALL
-install(TARGETS pi_hat_hardware_interface DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY include/ DESTINATION include)
-install(DIRECTORY test DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY test/ DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY test DESTINATION share/${PROJECT_NAME})
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

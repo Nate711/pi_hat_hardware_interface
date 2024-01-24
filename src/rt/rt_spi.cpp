@@ -2,7 +2,6 @@
  * @file rt_spi.h
  * @brief SPI communication to spine board
  */
-// #ifdef linux
 
 #include <byteswap.h>
 #include <math.h>
@@ -32,7 +31,7 @@ spi_torque_t spi_torque;
 
 pthread_mutex_t spi_mutex;
 
-const float max_torque[3] = {3.f, 3.f, 3.f};
+const float max_torque[3] = {12.f, 12.f, 12.f};
 const float wimp_torque[3] = {0.5f, 0.5f, 0.5f};
 const float disabled_torque[3] = {0.f, 0.f, 0.f};
 
