@@ -1,0 +1,9 @@
+<library path="pi_hat_hardware_interface">
+
+  <class name="pi_hat_hardware_interface/PiHatHardwareInterface" type="pi_hat_hardware_interface::PiHatHardwareInterface" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hands-On Robotics pi hat interface inspired by SPIne
+    </description>
+  </class>
+
+</library>

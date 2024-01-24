@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(pi3hat_hardware_interface)
+project(pi_hat_hardware_interface)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -16,24 +16,19 @@ find_package(tf2 REQUIRED)
 file(GLOB sources "src/*.cpp" "src/rt/*.c" "src/rt/*.cpp")
 
 # add compile directive for shared library
-add_library(pi3hat_hardware_interface SHARED ${sources})
-
-add_library(pi3hat SHARED include/pi3hat/pi3hat.cpp)
+add_library(pi_hat_hardware_interface SHARED ${sources})
 
 # add include directory
-target_include_directories(pi3hat_hardware_interface PRIVATE include)
+target_include_directories(pi_hat_hardware_interface PRIVATE include)
 
-target_link_libraries(pi3hat_hardware_interface pi3hat bcm_host)
-
-ament_target_dependencies(pi3hat_hardware_interface hardware_interface
+ament_target_dependencies(pi_hat_hardware_interface hardware_interface
                           pluginlib rclcpp rclcpp_lifecycle tf2)
 
 pluginlib_export_plugin_description_file(hardware_interface
-                                         pi3hat_hardware_interface.xml)
+                                         pi_hat_hardware_interface.xml)
 
 # INSTALL
-install(TARGETS pi3hat_hardware_interface DESTINATION lib/${PROJECT_NAME})
-install(TARGETS pi3hat DESTINATION lib/${PROJECT_NAME})
+install(TARGETS pi_hat_hardware_interface DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY test DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY test DESTINATION share/${PROJECT_NAME})

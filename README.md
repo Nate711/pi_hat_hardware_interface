@@ -1,19 +1,18 @@
-# pi3hat_hardware_interface
+# pi_hat_hardware_interface
 
-This repository provides a ros2_control hardware interface for the [mjbots pi3hat](https://github.com/mjbots/pi3hat).
+This repository provides a ros2_control hardware interface for the Pupper V3 Pi Hat.
 
 ## Prerequisites
 - Raspberry Pi 4 running Ubuntu 22.04 and ROS2 Humble [(tested with this image)](https://github.com/ros-realtime/ros-realtime-rpi4-image/releases/tag/22.04.1_v5.15.39-rt42-raspi_ros2_humble)
-- pi3hat r4.4 or newer (CAN doesn't seem to work on pi3hat r4.2)
 - Recommended: configure ros2_control for realtime operation as described [here](https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html#determinism)
 - Create a workspace `/home/pi/ros2_ws`
 
 ## How to configure
 - An example URDF is contained in `test_state_publisher.urdf.xacro`.
 ```
-<ros2_control name="pi3hat_hardware_interface" type="system">
+<ros2_control name="pi_hat_hardware_interface" type="system">
     <hardware>
-        <plugin>pi3hat_hardware_interface/Pi3HatHardwareInterface</plugin>
+        <plugin>pi_hat_hardware_interface/PiHatHardwareInterface</plugin>
         <param name="imu_mounting_deg.yaw">0</param>
         <param name="imu_mounting_deg.pitch">0</param>
         <param name="imu_mounting_deg.roll">0</param>
@@ -79,18 +78,13 @@ This repository provides a ros2_control hardware interface for the [mjbots pi3ha
 - Solution: `sudo ln /usr/lib/aarch64-linux-gnu/libbcm_host.so /usr/lib/libbcm_host.so.0`
 
 ### Issue
-- Problem: `pi3hat: could not open /dev/mem`
-- Solution: `export FASTRTPS_DEFAULT_PROFILES_FILE=/home/pi/ros2_ws/src/pi3hat_hardware_interface/fastrtps_profile_no_shmem.xml` and launch the ros2_control node as root with `sudo -E bash ~/ros2_ws/src/pi3hat_hardware_interface/run_as_root.sh ros2 launch ~/ros2_ws/src/pi3hat_hardware_interface/test/test_state_publisher.launch.py`
-- Explanation: The Pi3Hat library needs to be run as root to access the GPIO, but this prevents the FastDDS shared memory transport from working (no messages are published or received). Hence, we create a custom config file to force FastDDS to use UDP instead of shared memory.
-
-### Issue
 - Problem: Sometimes fails to start with `Segmentation fault (Address not mapped to object [(nil)])`
 - Solution: Manually install ros2_control and associated packages from [this branch](https://github.com/schornakj/ros2_control/tree/pr-revert-922). Compile with `colcon build --symlink-install --allow-overriding controller_interface controller_manager hardware_interface ros2_control_test_assets`.
 - Explanation: The controller manager suffers from a race condition on Humble [as described here](https://github.com/ros-controls/ros2_control/issues/979). The fix for this has not been merged yet.
 
 ## Debugging with GDB
-```colcon build --packages-select pi3hat_hardware_interface --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo```
+```colcon build --packages-select pi_hat_hardware_interface --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo```
 
-```sudo -E gdb --args /home/pi/ros2_ws/install/controller_manager/lib/controller_manager/ros2_control_node --ros-args --params-file /tmp/launch_params_sdkq8suy --params-file /home/pi/ros2_ws/src/pi3hat_hardware_interface/test/test_state_publisher.yaml```
+```sudo -E gdb --args /home/pi/ros2_ws/install/controller_manager/lib/controller_manager/ros2_control_node --ros-args --params-file /tmp/launch_params_sdkq8suy --params-file /home/pi/ros2_ws/src/pi_hat_hardware_interface/test/test_state_publisher.yaml```
 
-```set environment LD_LIBRARY_PATH /home/pi/ros2_ws/install/transmission_interface/lib:/home/pi/ros2_ws/install/controller_manager/lib:/home/pi/ros2_ws/install/pi3hat_hardware_interface/lib:/home/pi/ros2_ws/install/controller_interface/lib:/home/pi/ros2_ws/install/hardware_interface/lib:/home/pi/ros2_ws/install/controller_manager_msgs/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib```
+```set environment LD_LIBRARY_PATH /home/pi/ros2_ws/install/transmission_interface/lib:/home/pi/ros2_ws/install/controller_manager/lib:/home/pi/ros2_ws/install/pi_hat_hardware_interface/lib:/home/pi/ros2_ws/install/controller_interface/lib:/home/pi/ros2_ws/install/hardware_interface/lib:/home/pi/ros2_ws/install/controller_manager_msgs/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib```
