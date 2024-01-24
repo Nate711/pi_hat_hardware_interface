@@ -82,7 +82,7 @@ typedef struct {
 
 void init_spi();
 
-void spi_send_receive(spi_command_t* command, spi_data_t* data);
+void spi_send_receive(const spi_command_t& command, spi_data_t& data);
 void spi_driver_run();
 
 spi_data_t* get_spi_data();
