@@ -39,6 +39,7 @@ extern "C" {
       (byte & 0x10 ? '1' : '0'), (byte & 0x08 ? '1' : '0'), (byte & 0x04 ? '1' : '0'), \
       (byte & 0x02 ? '1' : '0'), (byte & 0x01 ? '1' : '0')
 
+// Human-readable command
 typedef struct {
   float q_des_abad[4];
   float q_des_hip[4];
@@ -63,6 +64,7 @@ typedef struct {
   int32_t flags[4];
 } spi_command_t;
 
+// Human-readable data
 typedef struct {
   float q_abad[4];
   float q_hip[4];
@@ -90,6 +92,7 @@ spi_command_t* get_spi_command();
 
 /*!
  * SPI command message
+ * Bit-stuffed format
  */
 typedef struct {
   float q_des_abad[2];
@@ -114,6 +117,7 @@ typedef struct {
 
 /*!
  * SPI data message
+ * Bit-stuffed format
  */
 typedef struct {
   float q_abad[2];
