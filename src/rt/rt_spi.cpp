@@ -12,6 +12,7 @@
 #include <string.h>
 #include <array>
 #include <cstring>
+#include <algorithm>
 
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
@@ -53,13 +54,13 @@ constexpr std::array<float, 4> kKneeOffset = {0.f, 0.f, 0.f, 0.f};
  * @return
  */
 template <typename T>
-uint32_t xor_checksum(const T &data) {
+uint32_t xor_checksum(const T &data, int max_len) {
   static_assert(sizeof(T) % sizeof(uint32_t) == 0,
                 "Struct size is not a multiple of uint32_t size.");
   const uint32_t *words = reinterpret_cast<const uint32_t *>(&data);
   constexpr int kLen = sizeof(T);
   uint32_t checksum = 0;
-  for (int i = 0; i < kLen; i++)
+  for (int i = 0; i < std::min(kLen, max_len); i++)
     checksum = checksum ^ words[i];
   return checksum;
 }
@@ -239,7 +240,7 @@ void spi_to_spine(const spi_command_t &cmd, spine_cmd_t &spine_cmd, int leg_0) {
     spine_cmd.flags[i] = cmd.flags[i + leg_0];
   }
 
-  spine_cmd.checksum = xor_checksum(spine_cmd);
+  spine_cmd.checksum = xor_checksum(spine_cmd, 32);
 }
 
 /*!
@@ -260,7 +261,7 @@ void spine_to_spi(spi_data_t &data, const spine_data_t &spine_data, int leg_0) {
     data.flags[i + leg_0] = spine_data.flags[i];
   }
 
-  uint32_t calc_checksum = xor_checksum(spine_data);
+  uint32_t calc_checksum = xor_checksum(spine_data, 14);
   if (calc_checksum != (uint32_t)spine_data.checksum) {
     printf("SPI ERROR BAD CHECKSUM GOT 0x%hx EXPECTED 0x%hx\n", calc_checksum, spine_data.checksum);
   }
@@ -290,8 +291,9 @@ void spi_send_receive(const spi_command_t &command, spi_data_t &data) {
     rx_buf = {};
 
     // copy into tx buffer flipping bytes
-    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++)
+    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++) {
       tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
+    }
     // tx_buf[i] = __bswap_16(cmd_d[i]);
 
     // each word is two bytes long
